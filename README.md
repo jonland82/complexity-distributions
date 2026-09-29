@@ -9,17 +9,16 @@ Best case, worst case, and average case give three numbers for an algorithm's co
 **Random splits create a distribution.** For $n$ distinct keys, Quicksort compares the pivot with the other $n-1$ keys, then recurses on two smaller groups. If $C_n$ is the total comparison count,
 
 $$
-C_n \overset{d}{=} n-1+C_{I_n}+C'_{n-1-I_n},
-\qquad I_n\sim\operatorname{Unif}\{0,\ldots,n-1\}.
+C_n \overset{d}{=} n-1+C_{I_n}+C'_{n-1-I_n}.
 $$
 
-Here $I_n$ is the number of keys to the pivot's left, and the prime marks an independent recursive copy. Starting with $C_0=C_1=0$, this recurrence describes the *whole distribution*, not only its average.
+Here $I_n$ is uniformly distributed over the integers from $0$ to $n-1$, and the prime marks an independent recursive copy. Starting with $C_0=C_1=0$, this recurrence describes the *whole distribution*, not only its average.
 
 **A lognormal curve wins the finite-size comparison.** Comparison counts have a longer right side: very uneven splits can make a run costly. The paper compares an ordinary normal fit with an ordinary lognormal fit using the expected log-density assigned to the true counts. For a positive random variable $X$, the difference between the best scores is
 
 $$
 \Delta(X)
-=\frac12\log\!\left(\frac{\operatorname{Var}(X)}{\operatorname{Var}(\log X)}\right)
+=\frac12\log\left(\frac{\mathrm{Var}(X)}{\mathrm{Var}(\log X)}\right)
 -\mathbb E[\log X].
 $$
 
@@ -33,7 +32,7 @@ $$
 \widehat L_n=\frac{L_n-\mu_n}{\sqrt{v_n}}\Rightarrow\mathcal N(0,1),
 $$
 
-where $\mu_n=\mathbb E[C_n]$, $v_n=\operatorname{Var}(C_n)$, and $L_n$ is the mean-and-variance-matched lognormal. The Quicksort limit $Q$ keeps a rightward skew of about $0.855$; the standardized lognormal's skew tends to zero. Their largest cumulative-probability gap stays positive. The second figure shows that gap at two finite sizes and in the limit.
+where $\mu_n=\mathbb E[C_n]$, $v_n=\mathrm{Var}(C_n)$, and $L_n$ is the mean-and-variance-matched lognormal. The Quicksort limit $Q$ keeps a rightward skew of about $0.855$; the standardized lognormal's skew tends to zero. Their largest cumulative-probability gap stays positive. The second figure shows that gap at two finite sizes and in the limit.
 
 The point is a useful distinction: **a model can fit better at every finite size and still miss the shape that remains after standardization.** The claims here concern the uniform-pivot comparison-count model described above. Proofs and the exact certificate specification are in the appendices.
 
