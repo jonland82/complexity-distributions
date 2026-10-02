@@ -11,8 +11,8 @@
 \setlength{\belowdisplayskip}{7pt plus 2pt}
 \renewcommand{\arraystretch}{1.12}
 
-\title{How Many Bits Does a Smooth Quicksort Model Miss?\\
-\large Distributional fit and the tree behind it}
+\title{Closing the Count Gap in Quicksort\\
+\large What a smooth law can match, and what the tree still knows}
 \author{}
 \date{October 2, 2026}
 
@@ -21,13 +21,11 @@
 \vspace{-1.8em}
 
 \begin{abstract}
-Randomized Quicksort has an exact, discrete distribution of comparison counts at
-every finite input size. Our research program asks why a smooth curve can fit that
-distribution well while missing features of the process that generates it. We give
-two distinct answers in bits: a small, measurable mismatch between one-time count
-distributions, and a separate loss of next-step information when the growing tree
-is reduced to its total cost. The distinction identifies what a better continuous
-approximation must preserve.
+Randomized Quicksort has a discrete comparison-count law at every finite size,
+but its limiting law is continuous. We formalize a way to measure the finite-size
+gap in bits, give a construction that closes it exactly, and explain why that
+construction does not recover the tree's dynamics. A finite-size split model and
+an error bound show how to pursue a useful, compact approximation instead.
 \end{abstract}
 
 \section*{From a good curve to an evolving model}
@@ -44,13 +42,32 @@ and scaling, $C_n$ approaches a non-normal Quicksort law $Q$; the fitted
 lognormal approaches a normal shape. A curve can therefore win at each finite
 size under one score and still miss the eventual shape.
 
-We next modeled the \emph{evolution} of the shape. Iterating the Quicksort
-limit's split-and-recombine rule from a point mass produces continuous laws
-$\nu_1,\nu_2,\ldots$ that approach $Q$. Mixing adjacent generations gives a
-fractional interpolation. It fits central probabilities fairly well, but at
-small sizes understates skewness and the long right tail. Putting the finite-$n$
-split in \eqref{eq:recurrence} back into a one-step model improves both. This
-raises a precise question: how far is the smooth model from the exact count law?
+The next question is how that shape develops. Write
+$\sigma^2=7-2\pi^2/3$ and
+$g(u)=1+2u\log u+2(1-u)\log(1-u)$. Starting at $\nu_0=\delta_0$,
+apply the limiting split transform
+\begin{equation}
+ \nu_{k+1}=\mathcal T(\nu_k),\qquad
+ \mathcal T(\nu)=\mathcal L\!\left(
+ U X_1+(1-U)X_2+g(U)/\sigma\right),
+ \quad X_1,X_2\stackrel{\mathrm{iid}}{\sim}\nu,\ U\sim{\rm Unif}(0,1).
+ \label{eq:transform}
+\end{equation}
+These centered laws approach $Q$, and
+$\operatorname{Var}(\nu_k)=r_k:=1-(2/3)^k$. A fractional generation is
+$\nu_{k,\alpha}=(1-\alpha)\nu_k+\alpha\nu_{k+1}$ with variance
+$r_{k,\alpha}=(1-\alpha)r_k+\alpha r_{k+1}$.
+For input size $n$, our smooth count model is
+\begin{equation}
+ X_{n,k,\alpha}=\mu_n+
+ s_n\,V_{k,\alpha}/\sqrt{r_{k,\alpha}},
+ \quad V_{k,\alpha}\sim\nu_{k,\alpha},\quad
+ \mu_n=\mathbb EC_n,\quad s_n^2=\operatorname{Var}(C_n).
+ \label{eq:interpolation}
+\end{equation}
+It has the exact mean and variance of $C_n$, while its shape changes with
+recursive generation. The fitted interpolation describes central probabilities
+well but understates early-size skewness and the long right tail.
 
 \section*{A finite bit measure for the count distribution}
 Write $p_n(c)=\Pr(C_n=c)$ for the exact probability of integer count $c$.
@@ -87,13 +104,63 @@ Input size $n$ & Fractional interpolation & Finite-size split correction \\
 \small Two independent Monte Carlo runs; Jensen--Shannon bits per rounded count.
 \end{center}
 
-\newpage
 \textbf{Reading the table.} At $n=16$, restoring finite-size structure cuts this mismatch by about 63\%.
 The $n=16$ correction uses exact child laws through size 8; the $n=32,64$
 corrections use moment-matched $Q$ child laws. The numbers are exploratory
-Monte Carlo estimates, especially close at $n=64$. Without the shared rounding
-rule, ordinary KL divergence is infinite simply because one law has atoms and
-the other is continuous; it is not a useful finite measure of fit.
+Monte Carlo estimates, especially close at $n=64$.
+
+\section*{An exact closure that teaches us what the score means}
+Let $U_n\sim{\rm Unif}(-\tfrac12,\tfrac12)$ be independent of the exact count
+$C_n$, and put $Y_n=C_n+U_n$. This $Y_n$ has a continuous density, yet
+\begin{equation}
+ \operatorname{round}(Y_n)=C_n\quad\hbox{almost surely},\qquad
+ q^Y_n(c)=p_n(c),\qquad \operatorname{JS}_2(p_n,q^Y_n)=0.
+ \label{eq:lift}
+\end{equation}
+Indeed, each interval $(c-\tfrac12,c+\tfrac12)$ is mapped back to $c$.
+Thus a continuous law can match every discrete count probability at the
+chosen resolution. This construction copies the exact law and explains none
+of it. The useful goal is a compact model that predicts \emph{unseen} sizes.
+Without a shared rounding rule, ordinary KL divergence between a discrete
+law and a continuous one is infinite, regardless of how closely their CDFs
+track each other.
+
+\section*{A structural route to closing the useful gap}
+Let $Z_m$ be independent, centered, unit-variance approximations to the
+standardized child count laws, and set $s_m=0$ when $m\leq2$. Restore the
+finite-size split $I\sim{\rm Unif}\{0,\ldots,n-1\}$:
+\begin{equation}
+ \widetilde C_n=n-1+\mu_I+s_I Z_I+
+ \mu_{n-1-I}+s_{n-1-I}Z'_{n-1-I}.
+ \label{eq:splitmodel}
+\end{equation}
+Conditioning on $I$ and using the exact mean and variance recurrences gives
+\begin{equation}
+ \mathbb E\widetilde C_n=\mu_n,\qquad
+ \operatorname{Var}(\widetilde C_n)
+ =\operatorname{Var}(\mu_I+\mu_{n-1-I})
+   +\mathbb E(s_I^2+s_{n-1-I}^2)=s_n^2.
+ \label{eq:moments}
+\end{equation}
+This moment guarantee does not force the tails to match. The table shows the
+gain when $Z_m$ is based on $Q$, with exact small children at $n=16$.
+
+There is also a simple error guarantee for a proposed \emph{count-level}
+version. Let $P_m$ be the exact child law and $R_m$ any discrete approximation
+(for example, a rounded smooth child law). Form $\widetilde P_n$ from
+\eqref{eq:recurrence} with $R_i,R_{n-1-i}$ in place of the true child laws.
+Convolution cannot increase total variation, so
+\begin{equation}
+ d_{\rm TV}(P_n,\widetilde P_n)
+ \leq \frac{2}{n}\sum_{m=0}^{n-1}d_{\rm TV}(P_m,R_m).
+ \label{eq:tvbound}
+\end{equation}
+This bound concerns the count-level variant; the table used continuous
+children followed by rounding the parent. Both suggest the next test:
+improve child laws by size, then evaluate the resulting parent at held-out
+sizes.
+
+\newpage
 
 \section*{A different loss: forgetting the growing tree}
 The same comparison count can arise from different binary search trees.
@@ -114,8 +181,16 @@ for retaining only cost is
  \label{eq:predictive}
 \end{equation}
 Equivalently, $L_n$ is the smallest expected extra log-loss of any predictor
-that sees only $C_n$, relative to one that sees $K_n$. This is a property of
-the natural tree coupling, not of a particular interpolating curve.
+that sees only $C_n$, relative to one that sees $K_n$:
+\begin{equation}
+ \inf_{a(\cdot\mid C_n)}
+ \mathbb E\,D_{\mathrm{KL},2}\!
+ \left(\Pr(D_{n+1}\in\cdot\mid K_n)\,\middle\|\,a(\cdot\mid C_n)\right)
+ =L_n.
+ \label{eq:optimalprediction}
+\end{equation}
+The minimizing predictor is $\Pr(D_{n+1}\in\cdot\mid C_n)$.
+This result concerns the natural tree coupling, not a particular smooth curve.
 
 Exact enumeration gives $L_{16}=0.31545$ bits. The largest value through
 $n=26$ occurs at $n=14$, about $0.31866$ bits, followed by a decline to
@@ -131,16 +206,36 @@ The two bit values answer different questions. Equation~\eqref{eq:js} tests
 \emph{one-time distributional fit} after declaring the count resolution.
 Equation~\eqref{eq:predictive} tests \emph{next-step prediction} after
 compressing the tree to one number. They cannot be added or compared as parts
-of a single information budget. In particular, matching every rounded count
-probability would close the first gap while leaving the second possible.
+of a single information budget. The exact continuous lift in
+\eqref{eq:lift} makes the distinction formal: because $C_n$ can be recovered
+from $Y_n$ and $U_n$ supplies no tree information,
+\begin{equation}
+ \operatorname{JS}_2(p_n,q^Y_n)=0
+ \quad\text{while}\quad
+ I(D_{n+1};K_n\mid Y_n)=I(D_{n+1};K_n\mid C_n)=L_n.
+ \label{eq:separation}
+\end{equation}
+At $n=16$, the first quantity is zero and the second is $0.31545$ bits.
 
-For the first goal, the next model should replace terminal-$Q$ child laws by
-size-dependent child approximations, then score unseen input sizes against the
-exact recurrence. For the second, the open theoretical question is the
-large-$n$ behavior of $L_n$. A continuous description can retain the tree
-profile, and a discrete count-only description can forget it. The informative
-distinction is therefore how much \emph{state} the model keeps, alongside how
-closely it fits the count distribution.
+For the first goal, take each $Z_m$ from the standardized fractional family
+at generation $t_\beta(m)$, then let $q_{n,\beta}$ be the rounded parent law
+produced by \eqref{eq:splitmodel}. Fit the shared size-to-generation map on
+some sizes and test it on others:
+\begin{align}
+ \widehat\beta
+ &=\arg\min_\beta \frac{1}{|\mathcal N_{\rm train}|}
+   \sum_{n\in\mathcal N_{\rm train}}
+   \operatorname{JS}_2(p_n,q_{n,\beta}), \nonumber\\
+ \mathcal E_{\rm test}(\widehat\beta)
+ &=\frac{1}{|\mathcal N_{\rm test}|}
+   \sum_{n\in\mathcal N_{\rm test}}
+   \operatorname{JS}_2(p_n,q_{n,\widehat\beta}).
+ \label{eq:heldout}
+\end{align}
+Skewness and right-tail probabilities should be checked alongside this score.
+For dynamics, the open theoretical question is the large-$n$ behavior of
+$L_n$. The key modeling choice is how much \emph{state} to retain, alongside
+how closely a smooth law fits the count distribution.
 
 \vfill
 {\footnotesize\textbf{Reproducibility.} The companion paper source,

@@ -54,4 +54,4 @@ python build_html.py
 
 ## Follow-up research
 
-The [two-page information-gap note](notes/continuous_discrete_information_gap/quicksort_information_gap.pdf) explains how to compare a continuous approximation with exact comparison counts in bits, and why predicting the next tree insertion is a separate question. Its [LaTeX source](notes/continuous_discrete_information_gap/quicksort_information_gap.tex) and the [detailed experiment record](artifacts/quicksort_predictive_information_extended_2026-10-02.md) are included here. These follow-up results are exploratory and are separate from the paper's theorems.
+The [three-page information-gap extension](notes/continuous_discrete_information_gap/quicksort_information_gap.pdf) formalizes the bit measure for a smooth count approximation, an exact continuous lift, and a finite-size split error bound. Its [LaTeX source](notes/continuous_discrete_information_gap/quicksort_information_gap.tex) and the [detailed experiment record](artifacts/quicksort_predictive_information_extended_2026-10-02.md) are included here. These follow-up results are exploratory and are separate from the paper's theorems.
