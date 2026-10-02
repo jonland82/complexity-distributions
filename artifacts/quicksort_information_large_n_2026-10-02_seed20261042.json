@@ -1,0 +1,89 @@
+{
+  "seed": 20261042,
+  "rows": [
+    {
+      "n": 16,
+      "runs": 500000,
+      "deepest_external_slot_seen": 14,
+      "profile_entropy": 2.200267051469035,
+      "conditional_depth_entropy_plugin": 2.5155473687942247,
+      "conditional_depth_entropy_crossfit": 2.5159779307757084,
+      "predictive_bits_plugin": 0.3152803173251897,
+      "predictive_bits_crossfit": 0.3157108793066734,
+      "crossfit_directions": [
+        2.515115629483007,
+        2.5168402320684105
+      ]
+    },
+    {
+      "n": 32,
+      "runs": 500000,
+      "deepest_external_slot_seen": 19,
+      "profile_entropy": 2.5972291842263666,
+      "conditional_depth_entropy_plugin": 2.853944743717993,
+      "conditional_depth_entropy_crossfit": 2.8549124087014803,
+      "predictive_bits_plugin": 0.25671555949162617,
+      "predictive_bits_crossfit": 0.2576832244751137,
+      "crossfit_directions": [
+        2.854553678967426,
+        2.855271138435535
+      ]
+    },
+    {
+      "n": 64,
+      "runs": 500000,
+      "deepest_external_slot_seen": 22,
+      "profile_entropy": 2.916368504032179,
+      "conditional_depth_entropy_plugin": 3.102188510463098,
+      "conditional_depth_entropy_crossfit": 3.10371380199338,
+      "predictive_bits_plugin": 0.185820006430919,
+      "predictive_bits_crossfit": 0.18734529796120114,
+      "crossfit_directions": [
+        3.1038178856978114,
+        3.1036097182889493
+      ]
+    },
+    {
+      "n": 128,
+      "runs": 500000,
+      "deepest_external_slot_seen": 26,
+      "profile_entropy": 3.167499997583063,
+      "conditional_depth_entropy_plugin": 3.29510310464668,
+      "conditional_depth_entropy_crossfit": 3.2973809548863224,
+      "predictive_bits_plugin": 0.12760310706361677,
+      "predictive_bits_crossfit": 0.12988095730325933,
+      "crossfit_directions": [
+        3.296941061244527,
+        3.297820848528118
+      ]
+    },
+    {
+      "n": 256,
+      "runs": 500000,
+      "deepest_external_slot_seen": 29,
+      "profile_entropy": 3.365605850026877,
+      "conditional_depth_entropy_plugin": 3.4507400890927435,
+      "conditional_depth_entropy_crossfit": 3.4540265291949623,
+      "predictive_bits_plugin": 0.0851342390658667,
+      "predictive_bits_crossfit": 0.08842067916808549,
+      "crossfit_directions": [
+        3.4540784101863795,
+        3.4539746482035447
+      ]
+    },
+    {
+      "n": 512,
+      "runs": 500000,
+      "deepest_external_slot_seen": 32,
+      "profile_entropy": 3.5243043741791276,
+      "conditional_depth_entropy_plugin": 3.58048423967632,
+      "conditional_depth_entropy_crossfit": 3.5850496800075655,
+      "predictive_bits_plugin": 0.05617986549719234,
+      "predictive_bits_crossfit": 0.06074530582843796,
+      "crossfit_directions": [
+        3.585151623877708,
+        3.5849477361374236
+      ]
+    }
+  ]
+}

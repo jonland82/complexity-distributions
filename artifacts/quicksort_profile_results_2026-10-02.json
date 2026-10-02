@@ -1,0 +1,30 @@
+{
+  "runs": 100000,
+  "seed": 20261002,
+  "rows": [
+    {
+      "n": 16,
+      "mean_innovation_variance": 0.00723024734076637,
+      "innovation_variance_cv": 0.5894542882712194,
+      "quadratic_cost_r2": 0.8623858221396861,
+      "empirical_cost_r2": 0.8600949828574055,
+      "same_cost_coverage": 0.99994
+    },
+    {
+      "n": 64,
+      "mean_innovation_variance": 0.0010765556316255618,
+      "innovation_variance_cv": 0.44010019648487586,
+      "quadratic_cost_r2": 0.766844295426844,
+      "empirical_cost_r2": 0.7455177923703677,
+      "same_cost_coverage": 0.9994
+    },
+    {
+      "n": 256,
+      "mean_innovation_variance": 0.00010985429202480396,
+      "innovation_variance_cv": 0.3324449851383086,
+      "quadratic_cost_r2": 0.716351525454259,
+      "empirical_cost_r2": 0.6683358676591312,
+      "same_cost_coverage": 0.9971
+    }
+  ]
+}

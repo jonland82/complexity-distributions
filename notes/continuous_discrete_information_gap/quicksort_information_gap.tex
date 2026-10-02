@@ -1,0 +1,150 @@
+\documentclass[10pt]{article}
+\usepackage[margin=0.83in]{geometry}
+\usepackage{amsmath,amssymb,booktabs}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{microtype}
+\usepackage[colorlinks=true,linkcolor=black,urlcolor=blue]{hyperref}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{5pt plus 1pt}
+\setlength{\abovedisplayskip}{7pt plus 2pt}
+\setlength{\belowdisplayskip}{7pt plus 2pt}
+\renewcommand{\arraystretch}{1.12}
+
+\title{How Many Bits Does a Smooth Quicksort Model Miss?\\
+\large Distributional fit and the tree behind it}
+\author{}
+\date{October 2, 2026}
+
+\begin{document}
+\maketitle
+\vspace{-1.8em}
+
+\begin{abstract}
+Randomized Quicksort has an exact, discrete distribution of comparison counts at
+every finite input size. Our research program asks why a smooth curve can fit that
+distribution well while missing features of the process that generates it. We give
+two distinct answers in bits: a small, measurable mismatch between one-time count
+distributions, and a separate loss of next-step information when the growing tree
+is reduced to its total cost. The distinction identifies what a better continuous
+approximation must preserve.
+\end{abstract}
+
+\section*{From a good curve to an evolving model}
+Let $C_n$ count comparisons when uniform-pivot Quicksort sorts $n$ distinct
+keys. Its exact law obeys
+\begin{equation}
+ C_n\overset{d}=n-1+C_{I_n}+C'_{n-1-I_n},
+ \qquad I_n\sim\operatorname{Uniform}\{0,\ldots,n-1\}.
+ \label{eq:recurrence}
+\end{equation}
+Our companion paper proves that an ordinary lognormal earns a higher expected
+log-density than an ordinary normal for every $n\geq4$. Yet, after centering
+and scaling, $C_n$ approaches a non-normal Quicksort law $Q$; the fitted
+lognormal approaches a normal shape. A curve can therefore win at each finite
+size under one score and still miss the eventual shape.
+
+We next modeled the \emph{evolution} of the shape. Iterating the Quicksort
+limit's split-and-recombine rule from a point mass produces continuous laws
+$\nu_1,\nu_2,\ldots$ that approach $Q$. Mixing adjacent generations gives a
+fractional interpolation. It fits central probabilities fairly well, but at
+small sizes understates skewness and the long right tail. Putting the finite-$n$
+split in \eqref{eq:recurrence} back into a one-step model improves both. This
+raises a precise question: how far is the smooth model from the exact count law?
+
+\section*{A finite bit measure for the count distribution}
+Write $p_n(c)=\Pr(C_n=c)$ for the exact probability of integer count $c$.
+Let $F_{n,\theta}$ be the CDF of a continuous approximation expressed in
+\emph{comparison-count units}. Ask the same question of both models by rounding
+the continuous output to the nearest integer:
+\begin{equation}
+ q_{n,\theta}(c)
+ =F_{n,\theta}(c+\tfrac12)-F_{n,\theta}(c-\tfrac12).
+ \label{eq:rounding}
+\end{equation}
+Now $p_n$ and $q_{n,\theta}$ live on the same count scale. With
+$m=(p_n+q_{n,\theta})/2$, their Jensen--Shannon divergence in bits is
+\begin{equation}
+ \operatorname{JS}_2(p_n,q_{n,\theta})
+ =\tfrac12 D_{\mathrm{KL},2}(p_n\Vert m)
+ +\tfrac12 D_{\mathrm{KL},2}(q_{n,\theta}\Vert m).
+ \label{eq:js}
+\end{equation}
+It is zero exactly when the rounded model gets every count probability right.
+Operationally, it is how much one observed count reveals about whether it came
+from Quicksort or the model, assuming either source was equally likely.
+
+\begin{center}
+\begin{tabular}{@{}rcc@{}}
+\toprule
+Input size $n$ & Fractional interpolation & Finite-size split correction \\
+\midrule
+16 & 0.00509 & 0.00186 \\
+32 & 0.00235 & 0.00135 \\
+64 & 0.00085 & 0.00070 \\
+\bottomrule
+\end{tabular}\\[-1pt]
+\small Two independent Monte Carlo runs; Jensen--Shannon bits per rounded count.
+\end{center}
+
+\newpage
+\textbf{Reading the table.} At $n=16$, restoring finite-size structure cuts this mismatch by about 63\%.
+The $n=16$ correction uses exact child laws through size 8; the $n=32,64$
+corrections use moment-matched $Q$ child laws. The numbers are exploratory
+Monte Carlo estimates, especially close at $n=64$. Without the shared rounding
+rule, ordinary KL divergence is infinite simply because one law has atoms and
+the other is continuous; it is not a useful finite measure of fit.
+
+\section*{A different loss: forgetting the growing tree}
+The same comparison count can arise from different binary search trees.
+Under the natural growing-tree coupling, let $K_n(d)$ be the number of empty
+insertion slots at depth $d$, and let $D_{n+1}$ be the depth chosen next. Then
+\begin{equation}
+ C_n=\sum_d dK_n(d)-2n,
+ \qquad \Pr(D_{n+1}=d\mid K_n)=\frac{K_n(d)}{n+1}.
+ \label{eq:profile}
+\end{equation}
+Knowing only $C_n$ is like knowing the total cost while forgetting where the
+remaining slots are. Two trees with the same cost can give different chances
+for the next insertion depth. The exact expected predictive penalty, in bits,
+for retaining only cost is
+\begin{equation}
+ L_n=I(D_{n+1};K_n\mid C_n)
+ =H(D_{n+1}\mid C_n)-H(D_{n+1}\mid K_n).
+ \label{eq:predictive}
+\end{equation}
+Equivalently, $L_n$ is the smallest expected extra log-loss of any predictor
+that sees only $C_n$, relative to one that sees $K_n$. This is a property of
+the natural tree coupling, not of a particular interpolating curve.
+
+Exact enumeration gives $L_{16}=0.31545$ bits. The largest value through
+$n=26$ occurs at $n=14$, about $0.31866$ bits, followed by a decline to
+$L_{26}=0.27815$. Two independent large-tree simulations estimate roughly
+$0.06$ bits at $n=512$. The evidence points toward a shrinking one-step gap,
+but does not prove that it vanishes. Meanwhile, the number of hidden profile
+details can grow: $H(K_n\mid C_n)$ rises from $2.38$ bits at $n=14$ to
+$5.85$ bits at $n=26$. More of the tree is hidden by the total cost, yet less
+of that hidden detail helps predict the very next insertion.
+
+\section*{What ``close the gap'' means}
+The two bit values answer different questions. Equation~\eqref{eq:js} tests
+\emph{one-time distributional fit} after declaring the count resolution.
+Equation~\eqref{eq:predictive} tests \emph{next-step prediction} after
+compressing the tree to one number. They cannot be added or compared as parts
+of a single information budget. In particular, matching every rounded count
+probability would close the first gap while leaving the second possible.
+
+For the first goal, the next model should replace terminal-$Q$ child laws by
+size-dependent child approximations, then score unseen input sizes against the
+exact recurrence. For the second, the open theoretical question is the
+large-$n$ behavior of $L_n$. A continuous description can retain the tree
+profile, and a discrete count-only description can forget it. The informative
+distinction is therefore how much \emph{state} the model keeps, alongside how
+closely it fits the count distribution.
+
+\vfill
+{\footnotesize\textbf{Reproducibility.} The companion paper source,
+\texttt{quicksort\_*.py} experiment scripts, and dated \texttt{artifacts/}
+notes in this repository contain the recurrence calculations, simulations,
+and limitations behind these figures.}
+\end{document}
